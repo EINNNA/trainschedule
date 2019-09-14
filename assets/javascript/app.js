@@ -43,10 +43,10 @@ $("#add-employee-btn").on("click", function(event) {
   alert("Employee successfully added");
 
   // Clears all of the text-boxes
-  $("#employee-name-input").val("");
-  $("#role-input").val("");
-  $("#start-input").val("");
-  $("#rate-input").val("");
+  $("#inputName").val("");
+  $("#inputDestination").val("");
+  $("#inputTime").val("");
+  $("#inputFrequency").val("");
 });
 
 // 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
@@ -54,17 +54,17 @@ database.ref().on("child_added", function(childSnapshot) {
   console.log(childSnapshot.val());
 
   // Store everything into a variable.
-  var empName = childSnapshot.val().name;
-  var empRole = childSnapshot.val().role;
-  var empStart = childSnapshot.val().start;
-  var empRate = childSnapshot.val().rate;
+  var trainName = childSnapshot.val().name;
+  var trainDestination = childSnapshot.val().role;
+  var trainTime = childSnapshot.val().start;
+  var trainFrequency = childSnapshot.val().rate;
 
   // Employee Info
   console.log(empName);
   console.log(empRole);
   console.log(empStart);
   console.log(empRate);
-
+/*
   // Prettify the employee start
   var empStartPretty = moment.unix(empStart).format("MM/DD/YYYY");
 
@@ -77,18 +77,19 @@ database.ref().on("child_added", function(childSnapshot) {
   var empBilled = empMonths * empRate;
   console.log(empBilled);
 
+  */
+
   // Create the new row
   var newRow = $("<tr>").append(
-    $("<td>").text(empName),
-    $("<td>").text(empRole),
-    $("<td>").text(empStartPretty),
-    $("<td>").text(empMonths),
+    $("<td>").text(trainName),
+    $("<td>").text(trainDestination),
+    $("<td>").text(trainTime),
+    $("<td>").text(trainFrequency),
     $("<td>").text(empRate),
-    $("<td>").text(empBilled)
   );
 
   // Append the new row to the table
-  $("#employee-table > tbody").append(newRow);
+  $("#train-table > tbody").append(newRow);
 });
 
 
