@@ -12,65 +12,57 @@ firebase.initializeApp(firebaseConfig);
 
 var database = firebase.database();
 
+$("#add-train-btn").on('click', function (event) {
 
-// 2. Button for adding Employees
-$("#add-employee-btn").on("click", function (event) {
-  event.preventDefault();
+  var trainName = $('#trainName-input').val().trim();
+  var trainDestination = $('#trainDestination-input').val().trim();
+  var firstTrainTime = $('#firstTrainTime-input').val();
+  var frequency = $('#frequency-input').val();
 
-  // Grabs user input
-  var trainName = $("#inputName").val().trim();
-  var trainDestination = $("#inputDestination").val().trim();
-  var trainTime = moment($("#inputTime").val().trim(), "MM/DD/YYYY").format("X");
-  var trainFrequency = $("#inputFrequency").val().trim();
-
-  if (trainName || trainDestination || trainTime || trainFrequency === "") {
-    alert("Fill all fields");
-  } else {
-    // Creates local "temporary" object for holding employee data
-    var newEmp = {
-      name: trainName,
-      destination: trainDestination,
-      time: trainTime,
-      frequency: trainFrequency
-    };
-
-    // Uploads employee data to the database
-    database.ref().push(newEmp);
-
-    // Logs everything to console
-    console.log(trainName.name);
-    console.log(trainDestination.destination);
-    console.log(trainTime.time);
-    console.log(trainFrequency.frequency);
-
-    alert("Employee successfully added");
-
-    // Clears all of the text-boxes
-    $("#inputName").val("");
-    $("#inputDestination").val("");
-    $("#inputTime").val("");
-    $("#inputFrequency").val("");
+  var newTrain = {
+    train: trainName,
+    destination: trainDestination,
+    firstTime: firstTrainTime,
+    trainFequency: frequency
   }
+  database.ref().push(newTrain);
+
+  alert("Train successfully added");
+
+  $("#trainName-input").val("");
+  $("#trainDestination-input").val("");
+  $("#firstTrainTime-input").val("");
+  $("#frequency-input").val("");
 });
 
-// 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
 database.ref().on("child_added", function (childSnapshot) {
-  console.log(childSnapshot.val());
-
-  // Store everything into a variable.
-  var trainName = childSnapshot.val().name;
+  var trainName = childSnapshot.val().train;
   var trainDestination = childSnapshot.val().destination;
-  var trainTime = childSnapshot.val().time;
-  var trainFrequency = childSnapshot.val().frequency;
+  var frequency = childSnapshot.val().trainFequency;
+  var firstTrainTime = childSnapshot.val().firstTime;
 
-  // Create the new row
-  var newRow = $("<tr>").append(
-    $("<td>").text(trainName),
-    $("<td>").text(trainDestination),
-    $("<td>").text(trainTime),
-    $("<td>").text(trainFrequency),
+  var firstTimeConverted = moment(firstTrainTime, 'HH:mm').subtract(1, 'years');
+  console.log(firstTimeConverted);
+
+  var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+  console.log("DIFFERENCE IN TIME: " + diffTime);
+
+  var tRemainder = diffTime % frequency;
+  console.log(tRemainder);
+
+  var tMinutesTillTrain = frequency - tRemainder;
+  console.log(tMinutesTillTrain);
+
+  var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+  console.log(moment(nextTrain).format("hh:mm"));
+
+  var newRow = $('<tr>').append(
+    $('<td>').text(trainName),
+    $('<td>').text(trainDestination),
+    $('<td>').text(frequency),
+    $('<td>').text(moment(nextTrain).format("hh:mm")),
+    $('<td>').text(tMinutesTillTrain),
   );
 
-  // Append the new row to the table
-  $("#train-table > tbody").append(newRow);
+  $("#train-table > tbody").prepend(newRow);
 });
