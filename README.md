@@ -1,18 +1,12 @@
 # trainschedule
 
+Input a train to Firebase database. 
+
 Uses:
-+ Firebase to store user input
-+ HTML
-+ JQuery 
++ Firebase database
 + Moment.js
 
-User Input:
-+ Train Name (Identification purposes)
-+ Destination (Identification purposes)
-+ First Train Time (Used to calculate the next train time)
-+ Frequency (Used to calculate the next train time)
+Will calculate the minutes to next train. 
 
-Will use real time and moment.js based on the users input to calculate the next train arrival. 
-
-See how it works here: 
+Check out how it works here:
 https://www.dropbox.com/s/xc102unyfx9zbgt/train%20schedule.gif?dl=0
